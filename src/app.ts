@@ -1,7 +1,8 @@
 import express from "express";
-import path from "path";
 import bodyParser from "body-parser";
 import * as dotenv from "dotenv";
+import { authRouter } from "./routes";
+import { notFoundMiddleware } from "./middleware";
 
 dotenv.config();
 const PORT = process.env.PORT;
@@ -27,11 +28,11 @@ class App {
     // setup database
   }
   private routes(): void {
-    this.app.get("/*", express.static(path.join(__dirname, "./public")));
+    this.app.use("*", notFoundMiddleware);
   }
   public run(): void {
-    this.app.listen(() => {
-      console.log(`> Server is running on port ${PORT}.`);
+    this.app.listen(PORT, () => {
+      console.log(`> Server is running on http://localhost:${PORT}.`);
     });
   }
 }
