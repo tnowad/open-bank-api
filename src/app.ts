@@ -2,7 +2,7 @@ import express from "express";
 import bodyParser from "body-parser";
 import * as dotenv from "dotenv";
 import { authRouter } from "./routes";
-import { notFoundMiddleware } from "./middleware";
+import { errorHandlerMiddleware, notFoundMiddleware } from "./middleware";
 
 dotenv.config();
 const PORT = process.env.PORT;
@@ -28,7 +28,9 @@ class App {
     // setup database
   }
   private routes(): void {
+    this.app.use("/api", authRouter);
     this.app.use("*", notFoundMiddleware);
+    this.app.use(errorHandlerMiddleware);
   }
   public run(): void {
     this.app.listen(PORT, () => {

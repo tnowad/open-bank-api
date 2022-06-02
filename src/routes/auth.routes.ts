@@ -3,7 +3,7 @@ import asyncHandler from "express-async-handler";
 const authRouter = Router();
 
 authRouter.get(
-  "register",
+  "/register",
   asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
     res.send("test");
   })
