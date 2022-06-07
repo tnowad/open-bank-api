@@ -16,7 +16,7 @@ const generateRefreshToken = (
   return jwt.sign(payload, secretKey);
 };
 
-const verifyToken = (token: string, secretKey: string): any => {
+const verifyToken = (token: string, secretKey: string): unknown => {
   return jwt.verify(token, secretKey);
 };
 
