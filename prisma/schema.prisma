@@ -8,8 +8,43 @@ datasource db {
 }
 
 model User {
-  id       Int     @id @default(autoincrement())
-  email    String  @unique
-  name     String?
-  password String
+  id         Int         @id @default(autoincrement())
+  name       String
+  email      String      @unique
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  accounts   Account[]
+  authTokens AuthToken[]
+}
+
+model AuthToken {
+  id        Int      @id @default(autoincrement())
+  token     String   @unique
+  ownerId   Int
+  owner     User     @relation(fields: [ownerId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Account {
+  id                   Int           @id @default(autoincrement())
+  accountNumber        String        @unique
+  balance              Float
+  createdAt            DateTime      @default(now())
+  updatedAt            DateTime      @updatedAt
+  ownerId              Int
+  owner                User          @relation(fields: [ownerId], references: [id])
+  sentTransactions     Transaction[] @relation("sender")
+  receivedTransactions Transaction[] @relation("receiver")
+}
+
+model Transaction {
+  id                Int      @id @default(autoincrement())
+  amount            Float
+  senderId          Int
+  receiverAccountId Int
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  sender            Account  @relation("sender", fields: [senderId], references: [id])
+  receiver          Account  @relation("receiver", fields: [receiverAccountId], references: [id])
 }
