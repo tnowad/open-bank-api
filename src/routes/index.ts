@@ -1,3 +1,3 @@
 import authRouter from "./auth.routes";
-
-export { authRouter };
+import endpointRouter from "./endpoint.routes";
+export { authRouter, endpointRouter };
