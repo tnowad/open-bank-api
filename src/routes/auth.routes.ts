@@ -1,28 +1,18 @@
-import { Router, Request, Response, NextFunction } from "express";
+import { Router } from "express";
 import asyncHandler from "express-async-handler";
-import { authenticationMiddleware } from "../middleware";
+import { authMiddleware } from "../middleware";
+import authControllers from "../controllers/auth.controllers";
+
 const authRouter = Router();
 
-authRouter.post(
-  "/register",
-  asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-    // register
-  })
-);
+authRouter.post("/register", asyncHandler(authControllers.register));
 
-authRouter.post(
-  "/login",
-  asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-    // login
-  })
-);
+authRouter.post("/login", asyncHandler(authControllers.logout));
 
 authRouter.post(
   "/logout",
-  authenticationMiddleware,
-  asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-    // logout
-  })
+  authMiddleware,
+  asyncHandler(authControllers.logout)
 );
 
 export default authRouter;

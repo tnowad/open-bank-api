@@ -1,5 +1,5 @@
 import notFoundMiddleware from "./notFound.middleware";
 import errorHandlerMiddleware from "./errorHandler.middleware";
-import authenticationMiddleware from "./authentication.middleware";
+import authMiddleware from "./auth.middleware";
 
-export { notFoundMiddleware, errorHandlerMiddleware, authenticationMiddleware };
+export { notFoundMiddleware, errorHandlerMiddleware, authMiddleware };
