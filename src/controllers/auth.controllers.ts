@@ -1,13 +1,9 @@
-import { Request, Response, NextFunction } from "express";
+import { Request, Response } from "express";
 import { AccessTokenPayload, RefreshTokenPayload } from "../types";
 import { generateAccessToken, generateRefreshToken } from "../utils/jwt.utils";
 const secretKey = process.env.SECRET_KEY as string;
 
-const login = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
+const login = async (req: Request, res: Response): Promise<void> => {
   try {
     const user = {
       id: 1,
@@ -46,24 +42,16 @@ const login = async (
       _links: links,
     });
   } catch (error) {
-    next(new Error("Login failed"));
+    //
   }
 };
 
-const register = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
+const register = async (req: Request, res: Response): Promise<void> => {
   return;
 };
 
-const logout = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
+const logout = async (req: Request, res: Response): Promise<void> => {
   return;
 };
 
-export default { login, register, logout };
+export { login, register, logout };
