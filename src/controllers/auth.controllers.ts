@@ -5,6 +5,9 @@ const secretKey = process.env.SECRET_KEY as string;
 
 const login = async (req: Request, res: Response): Promise<void> => {
   try {
+    const { email, username, password } = req.body;
+    console.log(email, username, password);
+
     const user = {
       id: 1,
       email: "example@exmple.com",

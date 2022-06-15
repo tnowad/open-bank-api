@@ -8,43 +8,49 @@ datasource db {
 }
 
 model User {
-  id         Int         @id @default(autoincrement())
-  name       String
-  email      String      @unique
-  createdAt  DateTime    @default(now())
-  updatedAt  DateTime    @updatedAt
-  accounts   Account[]
-  authTokens AuthToken[]
-}
-
-model AuthToken {
-  id        Int      @id @default(autoincrement())
-  token     String   @unique
-  ownerId   Int
-  owner     User     @relation(fields: [ownerId], references: [id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+  createdAt     DateTime  @default(now())
 }
 
 model Account {
-  id                   Int           @id @default(autoincrement())
-  accountNumber        String        @unique
-  balance              Float
-  createdAt            DateTime      @default(now())
-  updatedAt            DateTime      @updatedAt
-  ownerId              Int
-  owner                User          @relation(fields: [ownerId], references: [id])
-  sentTransactions     Transaction[] @relation("sender")
-  receivedTransactions Transaction[] @relation("receiver")
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
 }
 
-model Transaction {
-  id                Int      @id @default(autoincrement())
-  amount            Float
-  senderId          Int
-  receiverAccountId Int
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
-  sender            Account  @relation("sender", fields: [senderId], references: [id])
-  receiver          Account  @relation("receiver", fields: [receiverAccountId], references: [id])
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
 }
