@@ -7,7 +7,7 @@ const authRouter = Router();
 
 authRouter.post("/register", asyncHandler(authController.register));
 
-authRouter.post("/login", asyncHandler(authController.logout));
+authRouter.post("/login", asyncHandler(authController.login));
 
 authRouter.post("/logout", authMiddleware, asyncHandler(authController.logout));
 

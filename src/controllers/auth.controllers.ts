@@ -1,17 +1,29 @@
 import { Request, Response } from "express";
 import { AccessTokenPayload, RefreshTokenPayload } from "../types";
 import { generateAccessToken, generateRefreshToken } from "../utils/jwt.utils";
+import { PrismaClient } from "@prisma/client";
+import bcrypt from "bcrypt";
+
 const secretKey = process.env.SECRET_KEY as string;
+const prisma = new PrismaClient();
 
 const login = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { email, username, password } = req.body;
-    console.log(email, username, password);
+    const { email, password } = req.body;
+    const user = await prisma.user.findUnique({
+      where: { email },
+    });
+    if (!user) {
+      res.status(401).json({});
+      return;
+    }
 
-    const user = {
-      id: 1,
-      email: "example@exmple.com",
-    };
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordValid) {
+      res.status(401).json({});
+      return;
+    }
 
     const accessTokenPayload: AccessTokenPayload = {
       id: user.id.toString(),
@@ -21,11 +33,13 @@ const login = async (req: Request, res: Response): Promise<void> => {
     const refreshTokenPayload: RefreshTokenPayload = {
       id: user.id.toString(),
     };
+
     const accessToken = generateAccessToken(
       accessTokenPayload,
       secretKey,
       "15m"
     );
+
     const refreshToken = generateRefreshToken(refreshTokenPayload, secretKey);
 
     const links = {
