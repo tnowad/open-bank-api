@@ -64,7 +64,20 @@ const login = async (req: Request, res: Response): Promise<void> => {
 };
 
 const register = async (req: Request, res: Response): Promise<void> => {
-  return;
+  const { name, email, password } = req.body;
+  try {
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const user = await prisma.user.create({
+      data: {
+        name,
+        email,
+        password: hashedPassword,
+      },
+    });
+    res.json({});
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
 };
 
 const logout = async (req: Request, res: Response): Promise<void> => {
