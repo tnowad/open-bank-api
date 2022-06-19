@@ -10,7 +10,7 @@ const prisma = new PrismaClient();
 const login = async (req: Request, res: Response): Promise<void> => {
   try {
     const { email, password } = req.body;
-    const user = await prisma.user.findUnique({
+    let user = await prisma.user.findUnique({
       where: { email },
     });
     if (!user) {
@@ -37,10 +37,20 @@ const login = async (req: Request, res: Response): Promise<void> => {
     const accessToken = generateAccessToken(
       accessTokenPayload,
       secretKey,
-      "15m"
+      "1h"
     );
 
     const refreshToken = generateRefreshToken(refreshTokenPayload, secretKey);
+
+    user = await prisma.user.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        access_token: accessToken,
+        refresh_token: refreshToken,
+      },
+    });
 
     const links = {
       self: {
@@ -54,6 +64,7 @@ const login = async (req: Request, res: Response): Promise<void> => {
     };
 
     res.json({
+      user,
       accessToken,
       refreshToken,
       _links: links,
