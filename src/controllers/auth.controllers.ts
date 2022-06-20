@@ -1,3 +1,4 @@
+import { AuthenticatedRequest } from "./../middleware/auth.middleware";
 import { Request, Response } from "express";
 import { AccessTokenPayload, RefreshTokenPayload } from "../types";
 import { generateAccessToken, generateRefreshToken } from "../utils/jwt.utils";
@@ -103,7 +104,26 @@ const register = async (req: Request, res: Response): Promise<void> => {
 };
 
 const logout = async (req: Request, res: Response): Promise<void> => {
-  return;
+  try {
+    const user = await prisma.user.update({
+      where: {
+        id: (req as AuthenticatedRequest).user.id,
+      },
+      data: {
+        access_token: null,
+        refresh_token: null,
+      },
+    });
+    res.json({
+      user,
+      message: "Logged out successfully",
+    });
+  } catch (error) {
+    // Handle any errors that occur during the logout process
+    res.status(500).json({
+      error: "An error occurred while logging out",
+    });
+  }
 };
 
 export { login, register, logout };
