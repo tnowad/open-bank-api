@@ -1,9 +1,37 @@
-import express, { Request, Response, NextFunction } from "express";
+import express from "express";
 import bodyParser from "body-parser";
 import * as dotenv from "dotenv";
 import { authRouter, endpointRouter } from "./routes";
 import { errorHandlerMiddleware, notFoundMiddleware } from "./middleware";
-import listEndpoints, { Endpoint } from "express-list-endpoints";
+import swaggerUI from "swagger-ui-express";
+import swaggerJsdoc from "swagger-jsdoc";
+
+const options = {
+  definition: {
+    openapi: "3.0.0",
+    info: {
+      title: "LogRocket Express API with Swagger",
+      version: "0.1.0",
+      description:
+        "This is a simple CRUD API application made with Express and documented with Swagger",
+      license: {
+        name: "MIT",
+        url: "https://spdx.org/licenses/MIT.html",
+      },
+      contact: {
+        name: "LogRocket",
+        url: "https://logrocket.com",
+        email: "info@email.com",
+      },
+    },
+    servers: [
+      {
+        url: "http://localhost:3000",
+      },
+    ],
+  },
+  apis: ["./routes/*.js"],
+};
 
 dotenv.config();
 const PORT = process.env.PORT;
@@ -43,6 +71,11 @@ class App {
   private routes(): void {
     this.app.use("/", endpointRouter);
     this.app.use("/api", authRouter);
+    this.app.use(
+      "/api-docs",
+      swaggerUI.serve,
+      swaggerUI.setup(swaggerJsdoc(options))
+    );
     this.app.use("*", notFoundMiddleware);
     this.app.use(errorHandlerMiddleware);
   }
