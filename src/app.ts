@@ -2,7 +2,7 @@ import express from "express";
 import bodyParser from "body-parser";
 import * as dotenv from "dotenv";
 import { authRouter, endpointRouter } from "./routes";
-import { errorHandlerMiddleware, notFoundMiddleware } from "./middleware";
+import { errorHandlerMiddleware, notFoundMiddleware } from "./middlewares";
 import swaggerUI from "swagger-ui-express";
 import swaggerJsdoc from "swagger-jsdoc";
 
@@ -30,7 +30,7 @@ const options = {
       },
     ],
   },
-  apis: ["./routes/*.js"],
+  apis: ["./routes/*.ts"],
 };
 
 dotenv.config();

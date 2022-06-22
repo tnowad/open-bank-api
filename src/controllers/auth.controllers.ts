@@ -1,4 +1,4 @@
-import { AuthenticatedRequest } from "./../middleware/auth.middleware";
+import { AuthenticatedRequest } from "../middlewares/auth.middleware";
 import { Request, Response } from "express";
 import { AccessTokenPayload, RefreshTokenPayload } from "../types";
 import { generateAccessToken, generateRefreshToken } from "../utils/jwt.utils";
