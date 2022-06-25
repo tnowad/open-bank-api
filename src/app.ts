@@ -5,7 +5,7 @@ import { authRouter, endpointRouter } from "./routes";
 import { errorHandlerMiddleware, notFoundMiddleware } from "./middlewares";
 import swaggerUI from "swagger-ui-express";
 import swaggerJsdoc from "swagger-jsdoc";
-
+import { PORT } from "./configs";
 const options = {
   definition: {
     openapi: "3.0.0",
@@ -32,9 +32,6 @@ const options = {
   },
   apis: ["./routes/*.ts"],
 };
-
-dotenv.config();
-const PORT = process.env.PORT;
 
 class App {
   public app: express.Application;
