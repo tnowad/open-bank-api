@@ -1,47 +1,26 @@
 import express from "express";
 import bodyParser from "body-parser";
-import * as dotenv from "dotenv";
 import { authRouter, endpointRouter } from "./routes";
 import { errorHandlerMiddleware, notFoundMiddleware } from "./middlewares";
-import swaggerUI from "swagger-ui-express";
-import swaggerJsdoc from "swagger-jsdoc";
-import { PORT } from "./configs";
-const options = {
-  definition: {
-    openapi: "3.0.0",
-    info: {
-      title: "LogRocket Express API with Swagger",
-      version: "0.1.0",
-      description:
-        "This is a simple CRUD API application made with Express and documented with Swagger",
-      license: {
-        name: "MIT",
-        url: "https://spdx.org/licenses/MIT.html",
-      },
-      contact: {
-        name: "LogRocket",
-        url: "https://logrocket.com",
-        email: "info@email.com",
-      },
-    },
-    servers: [
-      {
-        url: "http://localhost:3000",
-      },
-    ],
-  },
-  apis: ["./routes/*.ts"],
-};
+import swaggerUi from "swagger-ui-express";
+import { NODE_ENV, PORT, LOG_FORMAT, ORIGIN, CREDENTIALS } from "./config";
+import swaggerJSDoc from "swagger-jsdoc";
 
 class App {
   public app: express.Application;
+  public env: string;
+  public port: string | number;
   private static instance: App;
 
   private constructor() {
+    this.env = NODE_ENV || "development";
+    this.port = PORT || 3000;
+
     this.app = express();
     this.config();
     this.middleware();
     this.databaseSetup();
+    this.initializeSwagger();
     this.routes();
   }
 
@@ -68,13 +47,25 @@ class App {
   private routes(): void {
     this.app.use("/", endpointRouter);
     this.app.use("/api", authRouter);
-    this.app.use(
-      "/api-docs",
-      swaggerUI.serve,
-      swaggerUI.setup(swaggerJsdoc(options))
-    );
+
     this.app.use("*", notFoundMiddleware);
     this.app.use(errorHandlerMiddleware);
+  }
+
+  private initializeSwagger() {
+    const options = {
+      swaggerDefinition: {
+        info: {
+          title: "REST API",
+          version: "1.0.0",
+          description: "Example docs",
+        },
+      },
+      apis: ["swagger.yaml"],
+    };
+
+    const specs = swaggerJSDoc(options);
+    this.app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
   }
 
   public run(): void {
