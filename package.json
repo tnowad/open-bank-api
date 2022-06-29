@@ -8,7 +8,7 @@
     "start": "yarn build && cross-env NODE_ENV=production node dist/index.js",
     "dev": "cross-env NODE_ENV=development nodemon",
     "build": "swc src -d dist --source-maps --copy-files",
-    "build:tsc": "tsc && tsc-alias",
+    "build:tsc": "tsc",
     "test": "jest --forceExit --detectOpenHandles",
     "lint": "eslint --ignore-path .gitignore --ext .ts src",
     "lint:fix": "npm run lint -- --fix"
@@ -48,6 +48,7 @@
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^4.6.3",
     "swc": "^1.0.11",
-    "ts-alias": "^0.0.7"
+    "ts-alias": "^0.0.7",
+    "tsconfig-paths": "^4.2.0"
   }
 }
