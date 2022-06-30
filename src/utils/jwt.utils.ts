@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import { AccessTokenPayload, RefreshTokenPayload } from "../types";
+import { AccessTokenPayload, RefreshTokenPayload } from "../interfaces";
 
 const generateAccessToken = (
   payload: AccessTokenPayload,

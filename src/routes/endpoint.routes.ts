@@ -1,6 +1,6 @@
 import { Router, Request, Response, Express } from "express";
 
-import app from "../app";
+import app from "@/app";
 import listEndpoints, { Endpoint } from "express-list-endpoints";
 
 interface EndpointNode extends Endpoint {

@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { verifyToken } from "../utils/jwt.utils";
-import { AccessTokenPayload } from "../types";
+import { AccessTokenPayload } from "../interfaces";
 
 const secretKey = process.env.SECRET_KEY as string;
 const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
