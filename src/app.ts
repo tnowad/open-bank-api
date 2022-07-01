@@ -56,9 +56,10 @@ class App {
     const options = {
       swaggerDefinition: {
         info: {
-          title: "REST API",
+          title: "Open Bank API",
           version: "1.0.0",
-          description: "Example docs",
+          description:
+            "OpenBankAPI is a powerful and flexible API banking platform that allows developers to integrate banking services into their applications. It provides a secure and scalable solution for managing user accounts, conducting financial transactions, and interacting with external payment gateways.",
         },
       },
       apis: ["swagger.yaml"],

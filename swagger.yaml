@@ -1,123 +1,127 @@
 tags:
-  - name: users
-    description: users API
+  - name: Users
+    description: Users API
 
 paths:
-  # [GET] users
-  /users:
-    get:
-      tags:
-        - users
-      summary: Find All Users
-      responses:
-        200:
-          description: "OK"
-        500:
-          description: "Server Error"
-
-    # [POST] users
+  /login:
     post:
-      tags:
-        - users
-      summary: Add User
+      summary: User login
+      consumes:
+        - application/json
+      produces:
+        - application/json
       parameters:
-        - name: body
-          in: body
-          description: user Data
+        - in: body
+          name: loginRequest
+          description: User credentials for login
           required: true
           schema:
-            $ref: "#/definitions/users"
-      responses:
-        201:
-          description: "Created"
-        400:
-          description: "Bad Request"
-        409:
-          description: "Conflict"
-        500:
-          description: "Server Error"
-
-  # [GET] users/id
-  /users/{id}:
-    get:
-      tags:
-        - users
-      summary: Find User By Id
-      parameters:
-        - name: id
-          in: path
-          description: User Id
-          required: true
-          type: integer
+            type: object
+            properties:
+              email:
+                type: string
+              password:
+                type: string
       responses:
         200:
-          description: "OK"
-        409:
-          description: "Conflict"
-        500:
-          description: "Server Error"
-
-    # [PUT] users/id
-    put:
+          description: Successful login
+          schema:
+            type: object
+            properties:
+              user:
+                $ref: "#/definitions/User"
+              accessToken:
+                type: string
+              refreshToken:
+                type: string
+              _links:
+                type: object
+                properties:
+                  self:
+                    type: object
+                    properties:
+                      href:
+                        type: string
+                      method:
+                        type: string
+                  refreshToken:
+                    type: object
+                    properties:
+                      href:
+                        type: string
+                      method:
+                        type: string
+        400:
+          description: Bad request (invalid email or password)
+        401:
+          description: Unauthorized (user not found or incorrect password)
       tags:
-        - users
-      summary: Update User By Id
+        - Authentication
+  /register:
+    post:
+      summary: User registration
+      consumes:
+        - application/json
+      produces:
+        - application/json
       parameters:
-        - name: id
-          in: path
-          description: user Id
-          required: true
-          type: integer
-        - name: body
-          in: body
-          description: user Data
+        - in: body
+          name: registerRequest
+          description: User registration details
           required: true
           schema:
-            $ref: "#/definitions/users"
+            type: object
+            properties:
+              name:
+                type: string
+              email:
+                type: string
+              password:
+                type: string
       responses:
         200:
-          description: "OK"
+          description: Successful registration
+          schema:
+            type: object
+            properties:
+              user:
+                $ref: "#/definitions/User"
         400:
-          description: "Bad Request"
-        409:
-          description: "Conflict"
+          description: Bad request (email already exists)
         500:
-          description: "Server Error"
-
-    # [DELETE] users/id
-    delete:
+          description: Internal server error
       tags:
-        - users
-      summary: Delete User By Id
-      parameters:
-        - name: id
-          in: path
-          description: user Id
-          required: true
-          type: integer
+        - Authentication
+  /logout:
+    post:
+      summary: User logout
+      produces:
+        - application/json
+      security:
+        - bearerAuth: []
       responses:
         200:
-          description: "OK"
-        409:
-          description: "Conflict"
+          description: Successful logout
+          schema:
+            type: object
+            properties:
+              user:
+                $ref: "#/definitions/User"
+              message:
+                type: string
+        401:
+          description: Unauthorized (invalid or missing access token)
         500:
-          description: "Server Error"
-
-# definitions
+          description: Internal server error
+      tags:
+        - Authentication
 definitions:
-  users:
+  User:
     type: object
-    required:
-      - email
-      - password
     properties:
+      id:
+        type: string
+      name:
+        type: string
       email:
         type: string
-        description: user Email
-      password:
-        type: string
-        description: user Password
-
-schemes:
-  - https
-  - http
