@@ -15,4 +15,4 @@ ENV NODE_ENV development
 EXPOSE 3000
 
 # Cmd script
-CMD ["npm", "dev"]
+CMD ["yarn", "dev"]
