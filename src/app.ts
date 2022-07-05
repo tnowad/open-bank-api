@@ -46,14 +46,14 @@ class App {
 
   private routes(): void {
     this.app.use("/", endpointRouter);
-    this.app.use("/api", authRouter);
+    this.app.use("/api/auth", authRouter);
 
     this.app.use("*", notFoundMiddleware);
     this.app.use(errorHandlerMiddleware);
   }
 
   private initializeSwagger() {
-    const options = {
+    const options: swaggerJSDoc.Options = {
       swaggerDefinition: {
         info: {
           title: "Open Bank API",

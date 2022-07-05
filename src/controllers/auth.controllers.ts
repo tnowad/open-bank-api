@@ -4,8 +4,9 @@ import { AccessTokenPayload, RefreshTokenPayload } from "@/interfaces";
 import { generateAccessToken, generateRefreshToken } from "@/utils/jwt.utils";
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
+import { HttpException } from "@/exceptions/http.exceptions";
+import { SECRET_KEY } from "@/config";
 
-const secretKey = process.env.SECRET_KEY as string;
 const prisma = new PrismaClient();
 
 const login = async (req: Request, res: Response): Promise<void> => {
@@ -15,14 +16,18 @@ const login = async (req: Request, res: Response): Promise<void> => {
       where: { email },
     });
     if (!user) {
-      res.status(401).json({});
+      res.status(401).json({
+        error: "User not found",
+      });
       return;
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if (!isPasswordValid) {
-      res.status(401).json({});
+      res.status(401).json({
+        error: "Password not valid",
+      });
       return;
     }
 
@@ -37,11 +42,11 @@ const login = async (req: Request, res: Response): Promise<void> => {
 
     const accessToken = generateAccessToken(
       accessTokenPayload,
-      secretKey,
+      SECRET_KEY,
       "1h"
     );
 
-    const refreshToken = generateRefreshToken(refreshTokenPayload, secretKey);
+    const refreshToken = generateRefreshToken(refreshTokenPayload, SECRET_KEY);
 
     user = await prisma.user.update({
       where: {
@@ -70,8 +75,9 @@ const login = async (req: Request, res: Response): Promise<void> => {
       refreshToken,
       _links: links,
     });
+    return;
   } catch (error) {
-    //
+    throw new HttpException(500, error);
   }
 };
 

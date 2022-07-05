@@ -3,7 +3,7 @@ tags:
     description: Users API
 
 paths:
-  /login:
+  /api/auth/login:
     post:
       summary: User login
       consumes:
@@ -57,7 +57,7 @@ paths:
           description: Unauthorized (user not found or incorrect password)
       tags:
         - Authentication
-  /register:
+  /api/auth/register:
     post:
       summary: User registration
       consumes:
@@ -92,7 +92,7 @@ paths:
           description: Internal server error
       tags:
         - Authentication
-  /logout:
+  /api/auth/logout:
     post:
       summary: User logout
       produces:
@@ -124,4 +124,12 @@ definitions:
       name:
         type: string
       email:
+        type: string
+      password:
+        type: string
+      emailVerified:
+        type: date
+      refreshToken:
+        type: string
+      accessToken:
         type: string
