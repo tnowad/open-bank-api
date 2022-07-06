@@ -41,7 +41,7 @@ class App {
   }
 
   private databaseSetup(): void {
-    // setup database
+    //
   }
 
   private routes(): void {
