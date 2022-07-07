@@ -58,22 +58,9 @@ const login = async (req: Request, res: Response): Promise<void> => {
       },
     });
 
-    const links = {
-      self: {
-        href: "/login",
-        method: "POST",
-      },
-      refreshToken: {
-        href: "/refresh-token",
-        method: "POST",
-      },
-    };
-
     res.json({
       user,
-      accessToken,
-      refreshToken,
-      _links: links,
+      message: "Login successfully",
     });
     return;
   } catch (error) {
@@ -127,7 +114,6 @@ const logout = async (req: Request, res: Response): Promise<void> => {
       message: "Logged out successfully",
     });
   } catch (error) {
-    // Handle any errors that occur during the logout process
     res.status(500).json({
       error: "An error occurred while logging out",
     });
