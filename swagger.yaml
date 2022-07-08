@@ -1,7 +1,16 @@
 tags:
   - name: Users
     description: Users API
-
+schemes:
+  - http
+  - https
+securityDefinitions:
+  Bearer:
+    type: apiKey
+    name: Authorization
+    in: header
+    description: >-
+      Enter the token with the `Bearer: ` prefix, e.g. "Bearer abcde12345".
 paths:
   /api/auth/login:
     post:
@@ -115,6 +124,7 @@ paths:
           description: Internal server error
       tags:
         - Authentication
+
 definitions:
   User:
     type: object
