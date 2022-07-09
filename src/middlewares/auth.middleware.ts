@@ -1,41 +1,57 @@
 import { Request, Response, NextFunction } from "express";
 import { verifyToken } from "../utils/jwt.utils";
 import { AccessTokenPayload } from "../interfaces";
+import { SECRET_KEY } from "@/config";
+import { PrismaClient, User } from "@prisma/client";
+import { HttpException } from "@/exceptions/http.exceptions";
+const prisma = new PrismaClient();
 
-const secretKey = process.env.SECRET_KEY as string;
-const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
-  req = req as AuthenticatedRequest;
-  const accessToken =
-    req.headers.authorization?.split(" ")[1] ?? req.query.token;
+const getAuthorization = (req) => {
+  const cookie = req.cookies["Authorization"];
+  if (cookie) return cookie;
 
-  if (!accessToken) {
-    return res
-      .status(401)
-      .json({ message: "Access denied. No token provided." });
-  }
+  const header = req.header("Authorization");
+  if (header) return header.split("Bearer ")[1];
 
+  return null;
+};
+
+const authMiddleware = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    const decodedToken = verifyToken(
-      accessToken as string,
-      secretKey
-    ) as AccessTokenPayload;
+    const authorization = getAuthorization(req);
 
-    (req as AuthenticatedRequest).user = {
-      id: decodedToken.id,
-      email: decodedToken.email,
-    };
+    if (authorization) {
+      const { id, email } = verifyToken(
+        authorization,
+        SECRET_KEY
+      ) as AccessTokenPayload;
 
-    next();
+      const user = await prisma.user.findUnique({
+        where: {
+          id,
+          email,
+        },
+      });
+
+      if (user) {
+        (req as AuthenticatedRequest).user = user;
+      } else {
+        next(new HttpException(401, "Wrong authentication token"));
+      }
+    } else {
+      next(new HttpException(404, "Authentication token missing"));
+    }
   } catch (error) {
-    return res.status(401).json({ message: "Invalid token." });
+    next(new HttpException(401, "Wrong authentication token"));
   }
 };
 
 export interface AuthenticatedRequest extends Request {
-  user: {
-    id: string;
-    email: string;
-  };
+  user: User;
 }
 
 export default authMiddleware;
