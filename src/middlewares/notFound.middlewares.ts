@@ -1,10 +1,6 @@
-import { Request, Response, NextFunction } from "express";
+import { Request, Response } from "express";
 
-const notFoundMiddleware = (
-  req: Request,
-  res: Response,
-  _next: NextFunction
-) => {
+const notFoundMiddleware = (req: Request, res: Response) => {
   res.status(404);
   res.json({
     error: {

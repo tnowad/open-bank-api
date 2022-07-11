@@ -1,10 +1,10 @@
-import { Request, Response, NextFunction } from "express";
+import { HttpException } from "@/exceptions";
+import { Request, Response } from "express";
 
 const errorHandlerMiddleware = (
-  err: Error,
+  err: HttpException,
   req: Request,
-  res: Response,
-  _next: NextFunction
+  res: Response
 ) => {
   console.error(err);
 
