@@ -1,33 +1,23 @@
 import { HttpException } from "@/exceptions";
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 
 const errorHandlerMiddleware = (
   err: HttpException,
   req: Request,
-  res: Response
+  res: Response,
+  next: NextFunction
 ) => {
-  console.error(err);
+  try {
+    const status: number = err.status || 500;
+    const message: string = err.message || "Something went wrong";
 
-  const statusCode = res.statusCode !== 200 ? res.statusCode : 500;
-  res.status(statusCode);
+    // Todo: Replace console log with logger in feature
+    console.log(`${req.method} ${req.path} ${status} ${message}`);
 
-  const errorResponse = {
-    error: {
-      code: statusCode,
-      message: err.message,
-      links: [
-        {
-          rel: "home",
-          href: `${req.protocol}://${req.get("host")}`,
-        },
-        {
-          rel: "documentation",
-          href: "https://github.com/tnowad/open-bank-api",
-        },
-      ],
-    },
-  };
-  res.json(errorResponse);
+    res.status(status).json({ message });
+  } catch (error) {
+    next(error);
+  }
 };
 
 export default errorHandlerMiddleware;
