@@ -6,12 +6,23 @@ import { PrismaClient, User } from "@prisma/client";
 import { HttpException } from "@/exceptions/http.exceptions";
 const prisma = new PrismaClient();
 
-const getAuthorization = (req) => {
-  const cookie = req.cookies["Authorization"];
-  if (cookie) return cookie;
+const getAuthorization = (req: Request) => {
+  // Read authorization value from cookie
+  const cookie = req.cookies && req.cookies["Authorization"];
+  if (cookie) {
+    console.log(cookie);
+    return cookie;
+  }
 
-  const header = req.header("Authorization");
-  if (header) return header.split("Bearer ")[1];
+  // Read authorization value from header
+  const header = req.headers && req.headers["authorization"];
+  if (header) {
+    const [scheme, token] = header.split(" ");
+    if (scheme === "Bearer") {
+      console.log(token);
+      return token;
+    }
+  }
 
   return null;
 };
@@ -23,7 +34,7 @@ const authMiddleware = async (
 ) => {
   try {
     const authorization = getAuthorization(req);
-
+    console.log({ authorization });
     if (authorization) {
       const { id, email } = verifyToken(
         authorization,
@@ -46,6 +57,7 @@ const authMiddleware = async (
       next(new HttpException(404, "Authentication token missing"));
     }
   } catch (error) {
+    console.log(error);
     next(new HttpException(401, "Wrong authentication token"));
   }
 };
