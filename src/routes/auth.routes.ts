@@ -9,6 +9,10 @@ authRouter.post("/register", asyncHandler(authController.register));
 
 authRouter.post("/login", asyncHandler(authController.login));
 
-authRouter.post("/logout", authMiddleware, asyncHandler(authController.logout));
+authRouter.post(
+  "/logout",
+  asyncHandler(authMiddleware),
+  asyncHandler(authController.logout)
+);
 
 export default authRouter;

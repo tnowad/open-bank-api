@@ -44,12 +44,11 @@ const authMiddleware = async (
       const user = await prisma.user.findUnique({
         where: {
           id,
-          email,
         },
       });
-
       if (user) {
         (req as AuthenticatedRequest).user = user;
+        next();
       } else {
         next(new HttpException(401, "Wrong authentication token"));
       }

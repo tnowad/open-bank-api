@@ -107,7 +107,7 @@ paths:
       produces:
         - application/json
       security:
-        - bearerAuth: []
+        - Bearer: []
       responses:
         200:
           description: Successful logout
