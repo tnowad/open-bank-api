@@ -7,19 +7,15 @@ import { HttpException } from "@/exceptions/http.exceptions";
 const prisma = new PrismaClient();
 
 const getAuthorization = (req: Request) => {
-  // Read authorization value from cookie
-  const cookie = req.cookies && req.cookies["Authorization"];
+  const cookie = req.cookies?.Authorization;
   if (cookie) {
-    console.log(cookie);
     return cookie;
   }
 
-  // Read authorization value from header
-  const header = req.headers && req.headers["authorization"];
+  const header = req.headers?.authorization;
   if (header) {
     const [scheme, token] = header.split(" ");
     if (scheme === "Bearer") {
-      console.log(token);
       return token;
     }
   }
@@ -34,13 +30,11 @@ const authMiddleware = async (
 ) => {
   try {
     const authorization = getAuthorization(req);
-    console.log({ authorization });
     if (authorization) {
-      const { id, email } = verifyToken(
+      const { id } = verifyToken(
         authorization,
         SECRET_KEY
       ) as AccessTokenPayload;
-
       const user = await prisma.user.findUnique({
         where: {
           id,
