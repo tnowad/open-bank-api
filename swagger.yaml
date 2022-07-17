@@ -131,15 +131,77 @@ definitions:
     properties:
       id:
         type: string
+        description: The unique identifier for the user.
       name:
         type: string
+        description: The name of the user.
       email:
         type: string
+        format: email
+        description: The email address of the user (must be unique).
       password:
         type: string
+        description: The password of the user.
       emailVerified:
-        type: date
-      refreshToken:
         type: string
-      accessToken:
+        format: date-time
+        description: The date and time when the user's email was verified.
+      image:
         type: string
+        description: The URL of the user's image.
+      refresh_token:
+        type: string
+        description: The refresh token for the user.
+      access_token:
+        type: string
+        description: The access token for the user.
+      createdAt:
+        type: string
+        format: date-time
+        description: The date and time when the user was created.
+      Card:
+        type: array
+        items:
+          $ref: "#/definitions/Card"
+        description: The cards associated with the user.
+
+  VerificationToken:
+    type: object
+    properties:
+      identifier:
+        type: string
+        description: The identifier for the verification token.
+      token:
+        type: string
+        description: The verification token (must be unique).
+      expires:
+        type: string
+        format: date-time
+        description: The date and time when the token expires.
+
+  Card:
+    type: object
+    properties:
+      id:
+        type: string
+        description: The unique identifier for the card.
+      userId:
+        type: string
+        description: The ID of the user associated with the card.
+      cardNumber:
+        type: string
+        description: The card number (must be unique).
+      balance:
+        type: number
+        description: The balance of the card.
+      createdAt:
+        type: string
+        format: date-time
+        description: The date and time when the card was created.
+      updatedAt:
+        type: string
+        format: date-time
+        description: The date and time when the card was last updated.
+      user:
+        $ref: "#/definitions/User"
+        description: The user associated with the card.
