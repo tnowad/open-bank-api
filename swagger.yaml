@@ -124,6 +124,115 @@ paths:
           description: Internal server error
       tags:
         - Authentication
+  
+  /api/users:
+    get:
+      summary: Get all users
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Successful operation
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/User"
+      tags:
+        - Users
+    post:
+      summary: Create a new user
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: user
+          description: User object
+          required: true
+          schema:
+            $ref: "#/definitions/User"
+      responses:
+        201:
+          description: User created
+          schema:
+            $ref: "#/definitions/User"
+        400:
+          description: Invalid request
+        500:
+          description: Internal server error
+      tags:
+        - Users
+  /api/users/{id}:
+    get:
+      summary: Get a user by ID
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: id
+          description: ID of the user to retrieve
+          required: true
+          type: string
+      responses:
+        200:
+          description: Successful operation
+          schema:
+            $ref: "#/definitions/User"
+        404:
+          description: User not found
+      tags:
+        - Users
+    put:
+      summary: Update a user by ID
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: id
+          description: ID of the user to update
+          required: true
+          type: string
+        - in: body
+          name: user
+          description: User object with updated data
+          required: true
+          schema:
+            $ref: "#/definitions/User"
+      responses:
+        200:
+          description: User updated
+          schema:
+            $ref: "#/definitions/User"
+        400:
+          description: Invalid request
+        404:
+          description: User not found
+        500:
+          description: Internal server error
+      tags:
+        - Users
+    delete:
+      summary: Delete a user by ID
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: id
+          description: ID of the user to delete
+          required: true
+          type: string
+      responses:
+        200:
+          description: User deleted
+          schema:
+            $ref: "#/definitions/User"
+        404:
+          description: User not found
+      tags:
+        - Users
 
 definitions:
   User:
