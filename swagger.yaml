@@ -124,7 +124,7 @@ paths:
           description: Internal server error
       tags:
         - Authentication
-  
+
   /api/users:
     get:
       summary: Get all users
