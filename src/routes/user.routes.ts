@@ -1,4 +1,16 @@
+import Routes from "@/interfaces/routes.interfaces";
 import { Router } from "express";
-const userRouter = Router();
 
-export default userRouter;
+class UserRouter implements Routes {
+  path = "/users";
+  router = Router();
+
+  constructor() {
+    this.initializeRoutes();
+  }
+  private initializeRoutes() {
+    this.router.get(`${this.path}`);
+  }
+}
+
+export default UserRouter;
