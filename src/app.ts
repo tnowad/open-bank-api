@@ -1,6 +1,6 @@
 import express from "express";
 import bodyParser from "body-parser";
-import { authRouter, endpointRouter } from "@/routes";
+import { authRouter } from "@/routes";
 import { errorHandlerMiddleware, notFoundMiddleware } from "@/middlewares";
 import swaggerUi from "swagger-ui-express";
 import { NODE_ENV, PORT, LOG_FORMAT, ORIGIN, CREDENTIALS } from "@/config";
@@ -45,7 +45,6 @@ class App {
   }
 
   private routes(): void {
-    this.app.use("/", endpointRouter);
     this.app.use("/api/auth", authRouter);
 
     this.app.use("*", notFoundMiddleware);
