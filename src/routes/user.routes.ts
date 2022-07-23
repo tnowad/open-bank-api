@@ -1,4 +1,4 @@
-import Routes from "@/interfaces/routes.interfaces";
+import { Routes } from "@/interfaces";
 import { Router } from "express";
 
 class UserRouter implements Routes {

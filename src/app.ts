@@ -1,18 +1,17 @@
 import express from "express";
 import bodyParser from "body-parser";
-import { authRouter } from "@/routes";
 import { errorHandlerMiddleware, notFoundMiddleware } from "@/middlewares";
 import swaggerUi from "swagger-ui-express";
 import { NODE_ENV, PORT, LOG_FORMAT, ORIGIN, CREDENTIALS } from "@/config";
 import swaggerJSDoc from "swagger-jsdoc";
+import { Routes } from "@/interfaces";
 
 class App {
   public app: express.Application;
   public env: string;
   public port: string | number;
-  private static instance: App;
 
-  private constructor() {
+  public constructor(routes: Routes[]) {
     this.env = NODE_ENV || "development";
     this.port = PORT || 3000;
 
@@ -21,14 +20,7 @@ class App {
     this.middleware();
     this.databaseSetup();
     this.initializeSwagger();
-    this.routes();
-  }
-
-  public static getInstance(): App {
-    if (!App.instance) {
-      App.instance = new App();
-    }
-    return App.instance;
+    this.routes(routes);
   }
 
   private config(): void {
@@ -44,8 +36,10 @@ class App {
     //
   }
 
-  private routes(): void {
-    this.app.use("/api/auth", authRouter);
+  private routes(routes: Routes[]): void {
+    routes.forEach((route) => {
+      this.app.use("/", route.router);
+    });
 
     this.app.use("*", notFoundMiddleware);
     this.app.use(errorHandlerMiddleware);
@@ -75,4 +69,4 @@ class App {
   }
 }
 
-export default App.getInstance();
+export default App;

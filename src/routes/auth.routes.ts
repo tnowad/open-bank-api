@@ -2,6 +2,7 @@ import { Router } from "express";
 import asyncHandler from "express-async-handler";
 import { authMiddleware } from "@/middlewares";
 import { authController } from "@/controllers";
+import { Routes } from "@/interfaces";
 
 const authRouter = Router();
 
@@ -15,4 +16,9 @@ authRouter.post(
   asyncHandler(authController.logout)
 );
 
-export default authRouter;
+class AuthRouter implements Routes {
+  path?: string;
+  router: Router;
+}
+
+export default AuthRouter;
