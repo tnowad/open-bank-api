@@ -2,9 +2,8 @@ import { Routes } from "@/interfaces";
 import { Router } from "express";
 
 class UserRouter implements Routes {
-  path = "/users";
+  path = "/api/users";
   router = Router();
-
   constructor() {
     this.initializeRoutes();
   }

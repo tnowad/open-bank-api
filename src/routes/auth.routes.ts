@@ -17,8 +17,15 @@ authRouter.post(
 );
 
 class AuthRouter implements Routes {
-  path?: string;
+  path?: string = "/api/auth";
   router: Router;
+  constructor() {
+    this.initializeRoutes();
+  }
+  private initializeRoutes() {
+    this.router = Router();
+    this.router.get(`${this.path}`);
+  }
 }
 
 export default AuthRouter;
