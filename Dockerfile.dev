@@ -1,5 +1,5 @@
-# NodeJS Version 20
-FROM node:20.2.0-alpine
+# NodeJS Version 16
+FROM node:16.18-buster-slim
 
 # Copy Dir
 COPY . ./app
@@ -8,11 +8,12 @@ COPY . ./app
 WORKDIR /app
 
 # Install Node Package
-RUN yarn install
+RUN npm install --legacy-peer-deps
 
 # Set Env
 ENV NODE_ENV development
+
 EXPOSE 3000
 
 # Cmd script
-CMD ["yarn", "dev"]
+CMD ["npm", "run", "dev"]

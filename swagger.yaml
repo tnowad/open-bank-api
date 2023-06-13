@@ -1,316 +1,123 @@
 tags:
-  - name: Users
-    description: Users API
-schemes:
-  - http
-  - https
-securityDefinitions:
-  Bearer:
-    type: apiKey
-    name: Authorization
-    in: header
-    description: >-
-      Enter the token with the `Bearer: ` prefix, e.g. "Bearer abcde12345".
-paths:
-  /api/auth/login:
-    post:
-      summary: User login
-      consumes:
-        - application/json
-      produces:
-        - application/json
-      parameters:
-        - in: body
-          name: loginRequest
-          description: User credentials for login
-          required: true
-          schema:
-            type: object
-            properties:
-              email:
-                type: string
-              password:
-                type: string
-      responses:
-        200:
-          description: Successful login
-          schema:
-            type: object
-            properties:
-              user:
-                $ref: "#/definitions/User"
-              accessToken:
-                type: string
-              refreshToken:
-                type: string
-              _links:
-                type: object
-                properties:
-                  self:
-                    type: object
-                    properties:
-                      href:
-                        type: string
-                      method:
-                        type: string
-                  refreshToken:
-                    type: object
-                    properties:
-                      href:
-                        type: string
-                      method:
-                        type: string
-        400:
-          description: Bad request (invalid email or password)
-        401:
-          description: Unauthorized (user not found or incorrect password)
-      tags:
-        - Authentication
-  /api/auth/register:
-    post:
-      summary: User registration
-      consumes:
-        - application/json
-      produces:
-        - application/json
-      parameters:
-        - in: body
-          name: registerRequest
-          description: User registration details
-          required: true
-          schema:
-            type: object
-            properties:
-              name:
-                type: string
-              email:
-                type: string
-              password:
-                type: string
-      responses:
-        200:
-          description: Successful registration
-          schema:
-            type: object
-            properties:
-              user:
-                $ref: "#/definitions/User"
-        400:
-          description: Bad request (email already exists)
-        500:
-          description: Internal server error
-      tags:
-        - Authentication
-  /api/auth/logout:
-    post:
-      summary: User logout
-      produces:
-        - application/json
-      security:
-        - Bearer: []
-      responses:
-        200:
-          description: Successful logout
-          schema:
-            type: object
-            properties:
-              user:
-                $ref: "#/definitions/User"
-              message:
-                type: string
-        401:
-          description: Unauthorized (invalid or missing access token)
-        500:
-          description: Internal server error
-      tags:
-        - Authentication
+  - name: users
+    description: users API
 
-  /api/users:
+paths:
+  # [GET] users
+  /users:
     get:
-      summary: Get all users
-      produces:
-        - application/json
+      tags:
+        - users
+      summary: Find All Users
       responses:
         200:
-          description: Successful operation
-          schema:
-            type: array
-            items:
-              $ref: "#/definitions/User"
-      tags:
-        - Users
+          description: 'OK'
+        500:
+          description: 'Server Error'
+
+    # [POST] users
     post:
-      summary: Create a new user
-      consumes:
-        - application/json
-      produces:
-        - application/json
+      tags:
+        - users
+      summary: Add User
       parameters:
-        - in: body
-          name: user
-          description: User object
+        - name: body
+          in: body
+          description: user Data
           required: true
           schema:
-            $ref: "#/definitions/User"
+            $ref: '#/definitions/users'
       responses:
         201:
-          description: User created
-          schema:
-            $ref: "#/definitions/User"
+          description: 'Created'
         400:
-          description: Invalid request
+          description: 'Bad Request'
+        409:
+          description: 'Conflict'
         500:
-          description: Internal server error
-      tags:
-        - Users
-  /api/users/{id}:
-    get:
-      summary: Get a user by ID
-      produces:
-        - application/json
-      parameters:
-        - in: path
-          name: id
-          description: ID of the user to retrieve
-          required: true
-          type: string
-      responses:
-        200:
-          description: Successful operation
-          schema:
-            $ref: "#/definitions/User"
-        404:
-          description: User not found
-      tags:
-        - Users
-    put:
-      summary: Update a user by ID
-      consumes:
-        - application/json
-      produces:
-        - application/json
-      parameters:
-        - in: path
-          name: id
-          description: ID of the user to update
-          required: true
-          type: string
-        - in: body
-          name: user
-          description: User object with updated data
-          required: true
-          schema:
-            $ref: "#/definitions/User"
-      responses:
-        200:
-          description: User updated
-          schema:
-            $ref: "#/definitions/User"
-        400:
-          description: Invalid request
-        404:
-          description: User not found
-        500:
-          description: Internal server error
-      tags:
-        - Users
-    delete:
-      summary: Delete a user by ID
-      produces:
-        - application/json
-      parameters:
-        - in: path
-          name: id
-          description: ID of the user to delete
-          required: true
-          type: string
-      responses:
-        200:
-          description: User deleted
-          schema:
-            $ref: "#/definitions/User"
-        404:
-          description: User not found
-      tags:
-        - Users
+          description: 'Server Error'
 
+  # [GET] users/id
+  /users/{id}:
+    get:
+      tags:
+        - users
+      summary: Find User By Id
+      parameters:
+        - name: id
+          in: path
+          description: User Id
+          required: true
+          type: integer
+      responses:
+        200:
+          description: 'OK'
+        409:
+          description: 'Conflict'
+        500:
+          description: 'Server Error'
+
+    # [PUT] users/id
+    put:
+      tags:
+        - users
+      summary: Update User By Id
+      parameters:
+        - name: id
+          in: path
+          description: user Id
+          required: true
+          type: integer
+        - name: body
+          in: body
+          description: user Data
+          required: true
+          schema:
+            $ref: '#/definitions/users'
+      responses:
+        200:
+          description: 'OK'
+        400:
+          description: 'Bad Request'
+        409:
+          description: 'Conflict'
+        500:
+          description: 'Server Error'
+
+    # [DELETE] users/id
+    delete:
+      tags:
+        - users
+      summary: Delete User By Id
+      parameters:
+        - name: id
+          in: path
+          description: user Id
+          required: true
+          type: integer
+      responses:
+        200:
+          description: 'OK'
+        409:
+          description: 'Conflict'
+        500:
+          description: 'Server Error'
+
+# definitions
 definitions:
-  User:
+  users:
     type: object
+    required:
+      - email
+      - password
     properties:
-      id:
-        type: string
-        description: The unique identifier for the user.
-      name:
-        type: string
-        description: The name of the user.
       email:
         type: string
-        format: email
-        description: The email address of the user (must be unique).
+        description: user Email
       password:
         type: string
-        description: The password of the user.
-      emailVerified:
-        type: string
-        format: date-time
-        description: The date and time when the user's email was verified.
-      image:
-        type: string
-        description: The URL of the user's image.
-      refresh_token:
-        type: string
-        description: The refresh token for the user.
-      access_token:
-        type: string
-        description: The access token for the user.
-      createdAt:
-        type: string
-        format: date-time
-        description: The date and time when the user was created.
-      Card:
-        type: array
-        items:
-          $ref: "#/definitions/Card"
-        description: The cards associated with the user.
+        description: user Password
 
-  VerificationToken:
-    type: object
-    properties:
-      identifier:
-        type: string
-        description: The identifier for the verification token.
-      token:
-        type: string
-        description: The verification token (must be unique).
-      expires:
-        type: string
-        format: date-time
-        description: The date and time when the token expires.
-
-  Card:
-    type: object
-    properties:
-      id:
-        type: string
-        description: The unique identifier for the card.
-      userId:
-        type: string
-        description: The ID of the user associated with the card.
-      cardNumber:
-        type: string
-        description: The card number (must be unique).
-      balance:
-        type: number
-        description: The balance of the card.
-      createdAt:
-        type: string
-        format: date-time
-        description: The date and time when the card was created.
-      updatedAt:
-        type: string
-        format: date-time
-        description: The date and time when the card was last updated.
-      user:
-        $ref: "#/definitions/User"
-        description: The user associated with the card.
+schemes:
+  - https
+  - http

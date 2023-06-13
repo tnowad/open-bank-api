@@ -1,72 +1,81 @@
-import express from "express";
-import bodyParser from "body-parser";
-import { errorHandlerMiddleware, notFoundMiddleware } from "@/middlewares";
-import swaggerUi from "swagger-ui-express";
-import { NODE_ENV, PORT, LOG_FORMAT, ORIGIN, CREDENTIALS } from "@/config";
-import swaggerJSDoc from "swagger-jsdoc";
-import { Routes } from "@/interfaces";
+import 'reflect-metadata';
+import compression from 'compression';
+import cookieParser from 'cookie-parser';
+import cors from 'cors';
+import express from 'express';
+import helmet from 'helmet';
+import hpp from 'hpp';
+import morgan from 'morgan';
+import swaggerJSDoc from 'swagger-jsdoc';
+import swaggerUi from 'swagger-ui-express';
+import { NODE_ENV, PORT, LOG_FORMAT, ORIGIN, CREDENTIALS } from '@config';
+import { Routes } from '@interfaces/routes.interface';
+import { ErrorMiddleware } from '@middlewares/error.middleware';
+import { logger, stream } from '@utils/logger';
 
-class App {
+export class App {
   public app: express.Application;
   public env: string;
   public port: string | number;
 
-  public constructor(routes: Routes[]) {
-    this.env = NODE_ENV || "development";
+  constructor(routes: Routes[]) {
+    this.app = express();
+    this.env = NODE_ENV || 'development';
     this.port = PORT || 3000;
 
-    this.app = express();
-    this.config();
-    this.middleware();
-    this.databaseSetup();
+    this.initializeMiddlewares();
+    this.initializeRoutes(routes);
     this.initializeSwagger();
-    this.routes(routes);
+    this.initializeErrorHandling();
   }
 
-  private config(): void {
-    // set view engine and view folder
-  }
-
-  private middleware(): void {
-    this.app.use(bodyParser.json());
-    this.app.use(bodyParser.urlencoded({ extended: false }));
-  }
-
-  private databaseSetup(): void {
-    //
-  }
-
-  private routes(routes: Routes[]): void {
-    routes.forEach((route) => {
-      this.app.use("/", route.router);
+  public listen() {
+    this.app.listen(this.port, () => {
+      logger.info(`=================================`);
+      logger.info(`======= ENV: ${this.env} =======`);
+      logger.info(`🚀 App listening on the port ${this.port}`);
+      logger.info(`=================================`);
     });
+  }
 
-    this.app.use("*", notFoundMiddleware);
-    this.app.use(errorHandlerMiddleware);
+  public getServer() {
+    return this.app;
+  }
+
+  private initializeMiddlewares() {
+    this.app.use(morgan(LOG_FORMAT, { stream }));
+    this.app.use(cors({ origin: ORIGIN, credentials: CREDENTIALS }));
+    this.app.use(hpp());
+    this.app.use(helmet());
+    this.app.use(compression());
+    this.app.use(express.json());
+    this.app.use(express.urlencoded({ extended: true }));
+    this.app.use(cookieParser());
+  }
+
+  private initializeRoutes(routes: Routes[]) {
+    routes.forEach(route => {
+      this.app.use('/', route.router);
+    });
   }
 
   private initializeSwagger() {
-    const options: swaggerJSDoc.Options = {
+    const options = {
       swaggerDefinition: {
         info: {
-          title: "Open Bank API",
-          version: "1.0.0",
-          description:
-            "OpenBankAPI is a powerful and flexible API banking platform that allows developers to integrate banking services into their applications. It provides a secure and scalable solution for managing user accounts, conducting financial transactions, and interacting with external payment gateways.",
+          title: 'REST API',
+          version: '1.0.0',
+          description: 'Example docs',
         },
       },
-      apis: ["swagger.yaml"],
+      apis: ['swagger.yaml'],
     };
 
     const specs = swaggerJSDoc(options);
-    this.app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
+    this.app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
   }
 
-  public run(): void {
-    this.app.listen(PORT, () => {
-      console.log(`> Server is running on http://localhost:${PORT}.`);
-    });
+  private initializeErrorHandling() {
+    this.app.use(ErrorMiddleware);
   }
 }
-
-export default App;

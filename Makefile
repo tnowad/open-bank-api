@@ -4,10 +4,10 @@
 
 SHELL := /bin/bash
 
-APP_NAME = open-bank-api
+APP_NAME = typescript-express
 APP_NAME := $(APP_NAME)
 
-.PHONY: help up down clean db
+.PHONY: help start clean db test
 
 help:
 	@grep -E '^[1-9a-zA-Z_-]+:.*?## .*$$|(^#--)' $(MAKEFILE_LIST) \
@@ -40,3 +40,7 @@ clean: ## Clean the images
 
 remove: ## Remove the volumes
 	docker volume rm -f ${APP_NAME}
+
+#-- Database
+db: ## Start the local database MySQL
+	docker-compose up -d mysql
