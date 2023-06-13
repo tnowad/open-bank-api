@@ -4,31 +4,31 @@
     {
       "type": "node-terminal",
       "request": "launch",
-      "name": "Dev typescript-express-starter",
+      "name": "Dev Open Bank API",
       "command": "npm run dev"
     },
     {
       "type": "node-terminal",
       "request": "launch",
-      "name": "Start typescript-express-starter",
+      "name": "Start Open Bank API",
       "command": "npm run start"
     },
     {
       "type": "node-terminal",
       "request": "launch",
-      "name": "Test typescript-express-starter",
+      "name": "Test Open Bank API",
       "command": "npm run test"
     },
     {
       "type": "node-terminal",
       "request": "launch",
-      "name": "Lint typescript-express-starter",
+      "name": "Lint Open Bank API",
       "command": "npm run lint"
     },
     {
       "type": "node-terminal",
       "request": "launch",
-      "name": "Lint:Fix typescript-express-starter",
+      "name": "Lint:Fix Open Bank API",
       "command": "npm run lint:fix"
     }
   ]
