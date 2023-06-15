@@ -1,5 +1,5 @@
 # NodeJS Version 16
-FROM node:16.18-buster-slim
+FROM node:lts-slim
 
 # Copy Dir
 COPY . ./app
@@ -9,6 +9,8 @@ WORKDIR /app
 
 # Change ownership of the application directory
 RUN chown -R 1000:1000 /app
+
+RUN apt-get update -y && apt-get install -y openssl
 
 # Install Node Package
 RUN npm install --legacy-peer-deps
