@@ -7,6 +7,9 @@ COPY . ./app
 # Work to Dir
 WORKDIR /app
 
+# Change ownership of the application directory
+RUN chown -R 1000:1000 /app
+
 # Install Node Package
 RUN npm install --legacy-peer-deps
 
@@ -14,6 +17,9 @@ RUN npm install --legacy-peer-deps
 ENV NODE_ENV development
 
 EXPOSE 3000
+
+# Switch to user 1000
+USER 1000
 
 # Cmd script
 CMD ["npm", "run", "dev"]
